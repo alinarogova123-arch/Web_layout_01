@@ -5,9 +5,9 @@ import pandas
 import collections
 
 
-def get_winery_age():
+def get_winery_age(today):
     foundation_year = datetime.date(year=1920, month=1, day=1)
-    winery_age = datetime.date.today() - foundation_year
+    winery_age = today - foundation_year
     return int(winery_age.days // 365.25)
 
 
@@ -36,7 +36,9 @@ env = Environment(
 
 template = env.get_template('template.html')
 
-winery_age = get_winery_age()
+today = datetime.date.today()
+
+winery_age = get_winery_age(today)
 
 wines = pandas.read_excel(
     'wine3.xlsx',
