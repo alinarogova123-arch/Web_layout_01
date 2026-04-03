@@ -3,6 +3,20 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 import datetime
 import pandas
 import collections
+import glob
+import argparse
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(description="Запускает сайт-магазин вина и напитков")
+    parser.add_argument(
+        'path',
+        nargs='?',
+        default=next(iter(glob.glob('*.xlsx')), None),
+        type=str,
+        help="Путь к excel файлу с напитками"
+    )
+    return parser
 
 
 def get_winery_age(today):
@@ -37,8 +51,11 @@ def main():
     template = env.get_template('template.html')
     today = datetime.date.today()
     winery_age = get_winery_age(today)
+    parser = create_parser()
+    args = parser.parse_args()
+    path = args.path
     wines = pandas.read_excel(
-        'wine3.xlsx',
+        path,
         na_values='N/A',
         keep_default_na=False
     ).to_dict(orient='records')
