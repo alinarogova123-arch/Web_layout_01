@@ -29,33 +29,29 @@ def get_wines_by_category(wines):
     return wines_by_category
 
 
-env = Environment(
-    loader=FileSystemLoader('.'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
-
-template = env.get_template('template.html')
-
-today = datetime.date.today()
-
-winery_age = get_winery_age(today)
-
-wines = pandas.read_excel(
-    'wine3.xlsx',
-    na_values='N/A',
-    keep_default_na=False
-).to_dict(orient='records')
-
-rendered_page = template.render(
-    winery_age=winery_age,
-    years_name=get_years_name(winery_age),
-    wines_by_category=get_wines_by_category(wines),
-)
-
-
-with open('index.html', 'w', encoding="utf8") as file:
-    file.write(rendered_page)
+def main():
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
+    template = env.get_template('template.html')
+    today = datetime.date.today()
+    winery_age = get_winery_age(today)
+    wines = pandas.read_excel(
+        'wine3.xlsx',
+        na_values='N/A',
+        keep_default_na=False
+    ).to_dict(orient='records')
+    rendered_page = template.render(
+        winery_age=winery_age,
+        years_name=get_years_name(winery_age),
+        wines_by_category=get_wines_by_category(wines),
+    )
+    with open('index.html', 'w', encoding="utf8") as file:
+        file.write(rendered_page)
+    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    server.serve_forever()
 
 
-server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-server.serve_forever()
+if __name__ == '__main__':
+    main()
