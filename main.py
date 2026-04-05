@@ -5,14 +5,13 @@ import pandas
 import collections
 import glob
 import argparse
+import sys
 
 
 def create_parser():
     parser = argparse.ArgumentParser(description="Запускает сайт-магазин вина и напитков")
     parser.add_argument(
         'path',
-        nargs='?',
-        default=next(iter(glob.glob('*.xlsx')), None),
         type=str,
         help="Путь к excel файлу с напитками"
     )
@@ -71,4 +70,12 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except SystemExit:
+        print('Укажите путь к файлу с напитками')
+        sys.exit(1)
+    except FileNotFoundError:
+        print('Такого файла в указаной директории нет')
+        sys.exit(1)
+
